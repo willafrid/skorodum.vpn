@@ -1,0 +1,8 @@
+provider: UNKNOWN
+country: UNKNOWN
+origin: UNKNOWN
+netname: UNKNOWN
+ips: 2
+status: no_match=2
+sample_ips: 2.78.58.1, 2.63.2.1
+

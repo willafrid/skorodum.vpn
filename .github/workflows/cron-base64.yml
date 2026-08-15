@@ -1,0 +1,39 @@
+name: Sync combined text
+
+on:
+  schedule:
+    - cron: "7,37 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-combined-text
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Download, decode, and combine sources
+        run: python cron-base64/sync_sources.py
+
+      - name: Commit updated file
+        run: |
+          if git diff --quiet -- cron-base64/combined.txt; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add cron-base64/combined.txt
+          git commit -m "chore: refresh combined text"
+          git push
